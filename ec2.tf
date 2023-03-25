@@ -88,7 +88,7 @@ resource "aws_instance" "ec2_instance" {
   instance_type          = "t2.micro"
   subnet_id              = aws_default_subnet.default_az1.id
   vpc_security_group_ids = [aws_security_group.ec2_security_group.id]
-  key_name               = "ec2_key"
+  key_name               = "ec2-key"
   # user_data            = file("install_jenkins.sh")
 
   tags = {
@@ -104,7 +104,7 @@ resource "null_resource" "name" {
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file("~/Downloads/ec2_key.pem")
+    private_key = file("~/Downloads/ec2-key.pem")
     host        = aws_instance.ec2_instance.public_ip
   }
 
