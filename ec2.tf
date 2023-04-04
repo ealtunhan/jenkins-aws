@@ -1,15 +1,15 @@
 # configured aws provider with proper credentials
 provider "aws" {
-  region    = "us-east-1"
-  
+  region = "us-east-1"
+
 }
 
 
 # create default vpc if one does not exit
 resource "aws_default_vpc" "default_vpc" {
 
-  tags    = {
-    Name  = "default vpc"
+  tags = {
+    Name = "default vpc"
   }
 }
 
@@ -22,7 +22,7 @@ data "aws_availability_zones" "available_zones" {}
 resource "aws_default_subnet" "default_az1" {
   availability_zone = data.aws_availability_zones.available_zones.names[0]
 
-  tags   = {
+  tags = {
     Name = "default subnet"
   }
 }
@@ -36,30 +36,30 @@ resource "aws_security_group" "ec2_security_group" {
 
   # allow access on port 8080
   ingress {
-    description      = "http proxy access"
-    from_port        = 8080
-    to_port          = 8080
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0", "192.30.252.0/22", "185.199.108.0/22", "140.82.112.0/20", "143.55.64.0/20",]
+    description = "http proxy access"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0", "192.30.252.0/22", "185.199.108.0/22", "140.82.112.0/20", "143.55.64.0/20", ]
   }
 
   # allow access on port 22
   ingress {
-    description      = "ssh access"
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0", "192.30.252.0/22", "185.199.108.0/22", "140.82.112.0/20", "143.55.64.0/20",]
+    description = "ssh access"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0", "192.30.252.0/22", "185.199.108.0/22", "140.82.112.0/20", "143.55.64.0/20", ]
   }
 
   egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = -1
-    cidr_blocks      = ["0.0.0.0/0"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags   = {
+  tags = {
     Name = "jenkins server security group"
   }
 }
@@ -69,7 +69,7 @@ resource "aws_security_group" "ec2_security_group" {
 data "aws_ami" "amazon_linux_2" {
   most_recent = true
   owners      = ["amazon"]
-  
+
   filter {
     name   = "owner-alias"
     values = ["amazon"]
@@ -117,8 +117,8 @@ resource "null_resource" "name" {
   # set permissions and run the install_jenkins.sh file
   provisioner "remote-exec" {
     inline = [
-        "sudo chmod +x /tmp/install_jenkins.sh",
-        "sh /tmp/install_jenkins.sh",
+      "sudo chmod +x /tmp/install_jenkins.sh",
+      "sh /tmp/install_jenkins.sh",
     ]
   }
 
@@ -129,5 +129,5 @@ resource "null_resource" "name" {
 
 # print the url of the jenkins server
 output "website_url" {
-  value     = join ("", ["http://", aws_instance.ec2_instance.public_dns, ":", "8080"])
+  value = join("", ["http://", aws_instance.ec2_instance.public_dns, ":", "8080"])
 }
