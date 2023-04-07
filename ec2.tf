@@ -88,7 +88,7 @@ resource "aws_instance" "ec2_instance" {
   instance_type          = "t2.micro"
   subnet_id              = aws_default_subnet.default_az1.id
   vpc_security_group_ids = [aws_security_group.ec2_security_group.id]
-  key_name               = "ec2-key"
+  key_name               = "ec2-newkey"
   # user_data            = file("install_jenkins.sh")
 
   tags = {
@@ -104,21 +104,21 @@ resource "null_resource" "name" {
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file("~/Downloads/ec2-key.pem")
+    private_key = file("~/Downloads/ec2-newkey.pem")
     host        = aws_instance.ec2_instance.public_ip
   }
 
   # copy the install_jenkins.sh file from your computer to the ec2 instance 
   provisioner "file" {
     source      = "install_jenkins.sh"
-    destination = "/tmp/install_jenkins.sh"
+    destination = "./install_jenkins.sh"
   }
 
   # set permissions and run the install_jenkins.sh file
   provisioner "remote-exec" {
     inline = [
-      "sudo chmod +x /tmp/install_jenkins.sh",
-      "sh /tmp/install_jenkins.sh",
+      "sudo chmod +x ./install_jenkins.sh",
+      "sh ./install_jenkins.sh",
     ]
   }
 
